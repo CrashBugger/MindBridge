@@ -95,7 +95,7 @@ class TrainWrap(torch.nn.Module):
         attention_mask = memory_provide_input["src_attention_mask"]
         outputs = self.memory_net(input_ids=input_ids, attention_mask=attention_mask)
 
-        hidden_states = outputs.hidden_states[-1][:, 0]  # 获取 [CLS] token 的 hidden state
+        hidden_states = outputs.hidden_states[-1][:, 0]
         cls_transformed = self.memory_projection(hidden_states)
 
         memory_provide_input = utils.add_memory_prefix(
@@ -105,7 +105,6 @@ class TrainWrap(torch.nn.Module):
         )
 
         def hook_wte_forward(module, input, output):
-            # 替换嵌入的第一个位置为 transformed hidden states
             return torch.cat(
                 [einops.rearrange(cls_transformed, "b d -> b 1 d").to(output.dtype), output[:, 1:, :]],
                 dim=1
@@ -171,14 +170,14 @@ class TrainWrap(torch.nn.Module):
 
         if memory_provide_input:
             def cal_mlm_loss(logits, labels):
-                loss_fct = torch.nn.CrossEntropyLoss()  # -100 index = padding token
+                loss_fct = torch.nn.CrossEntropyLoss()
                 masked_lm_loss = loss_fct(logits.reshape(-1, logits.shape[-1]), labels.reshape(-1))
                 return masked_lm_loss
 
             start, end = memory_task_input_start_end
             hidden_states = outputs.hidden_states[-1][start:end, 0]
             cls_transformed = self.memory_projection(hidden_states)
-            # 添加占位符
+
             memory_provide_input = utils.add_memory_prefix(target_model_tokenizer=self.memory_provide_target_tokenizer,
                                                            target_model_tok=memory_provide_input, device=self.device, )
 
@@ -480,7 +479,6 @@ def evaluate_memory_provide_mask(model, dataloader, mask_token_id, ):
     all_preds = []
     all_labels = []
 
-    # 遍历训练集
     progress_bar = tqdm(dataloader, desc="Evaluating")
     for batch in progress_bar:
         with torch.no_grad():
@@ -535,7 +533,7 @@ def train(dataset_knowledge_dataloader, dataset_locality_dataloader, dataset_kno
     dataset_locality_iter = iter(dataset_locality_dataloader)
     dataset_knowledge_provide_iter = iter(dataset_knowledge_provide_dataloader)
     for batch in progress_bar:
-        # outputs = model(**batch)
+
         classify_task_input = None
         memory_provide_input = None
         if classify_and_memory_train:

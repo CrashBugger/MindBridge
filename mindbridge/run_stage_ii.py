@@ -132,7 +132,7 @@ def tokenize(tokenizer, prompt_inputs, alt_inputs, device):
     for i in range(len(num_prompt_toks)):
         tokens["labels"][i][:num_prompt_toks[i]] = mask_token
 
-    tokens["labels"][tokens["input_ids"] == tokenizer.pad_token_id] = mask_token  # 将padding index和非ans的prompt变为mask
+    tokens["labels"][tokens["input_ids"] == tokenizer.pad_token_id] = mask_token
     tokens = get_dict_to_device(tokens, device)
     return tokens
 
@@ -196,7 +196,7 @@ def padding_sequence(memory_model_tok, target_model_tok, locality_tok, memory_mo
             target_model_tok['labels'] = torch.cat([
                 target_model_tok['labels'],
                 torch.full((target_model_tok['labels'].size(0), pad_len),
-                           -100,  # 使用-100作为label的padding id
+                           -100,
                            dtype=torch.long,
                            device=device)
             ], dim=1)
@@ -353,7 +353,7 @@ if __name__ == '__main__':
         for idx, batch in progress_bar:
             with accelerator.accumulate(model):
                 try:
-                    locality_tok = next(dataset_locality_iter)  # 返回的是一个字典，value是list
+                    locality_tok = next(dataset_locality_iter)
                 except:
                     dataset_locality_iter = iter(dataset_locality_loader)
                     locality_tok = next(dataset_locality_iter)
@@ -361,11 +361,11 @@ if __name__ == '__main__':
                 alt_inputs, prompt_inputs = batch['alt'], batch['src']
 
                 target_model_tok = tokenize(model.target_model_tokenizer, prompt_inputs,
-                                            alt_inputs, device)  # 多了个label key
+                                            alt_inputs, device)
 
                 memory_model_tok = model.memory_model_tokenizer(prompt_inputs, return_tensors="pt", padding=True,
                                                                 truncation=True,
-                                                                max_length=max_length)  # 正常memory model tok的输出
+                                                                max_length=max_length)
                 memory_model_tok = get_dict_to_device(memory_model_tok, device)
 
                 memory_model_tok, target_model_tok, locality_tok = padding_sequence(memory_model_tok,
