@@ -1,0 +1,30 @@
+msg: ""
+max_length: 180
+
+add_prefix_data: True
+prefix_data_path: "../data/PrefixData/prefix_data.json"
+
+dataset: "zsre"
+in_scope_index_start: 0
+in_scope_index_end: 10000
+out_of_scope_index_start: 70000
+out_of_scope_index_end: -1
+
+
+# dataset: "mcf" # Uncomment to use mcf dataset
+#in_scope_index_start: 0
+#in_scope_index_end: 10000
+#out_of_scope_index_start: 0
+#out_of_scope_index_end: 10000
+
+memory_model: "bert-base-uncased"
+memory_loss_weight: 1
+classify_task_weight: 1
+memory_provide_task_weight: 1
+
+inject_epoch: 35
+mid_epoch: 5
+all_epoch: 80
+
+lr: 7.0e-05
+batch_size: 32

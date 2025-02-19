@@ -1,0 +1,27 @@
+max_length: 250
+exp_id: null # will be generated in code
+msg: ""
+num_epochs: 2
+#num_epochs: 80
+gradient_accumulation_steps: 1
+batch_size: 16
+lr_rate: 8.0e-05
+memory_exp_id: "20250219-163414-vFGmPjmjEg6KlNyoSGsQ"
+
+#target_model: "meta-llama/Meta-Llama-3-8B"
+#target_model: "EleutherAI/gpt-j-6B"
+target_model: "openai-community/gpt2-xl"
+
+train_projection_ratio: 1
+prefix_data_path: "../data/PrefixData/prefix_data.json"
+
+
+# loaded from stage i config yaml
+memory_model_name: null
+
+dataset: null
+in_scope_index_start: null
+in_scope_index_end: null
+out_of_scope_index_start: null
+out_of_scope_index_end: null
+add_prefix_data: null
