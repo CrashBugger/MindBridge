@@ -1,3 +1,5 @@
+
+
 # MindBridge
 
 - Code for the paper `MindBridge: Scalable and Cross-Model Knowledge Editing via Memory-Augmented Modality`.
@@ -48,7 +50,7 @@ for training Stage 1 at `./config/stage_i.yaml`, and then execute the following 
 
 ```bash
 cd mindbridge
-python run_stage_i.py --config_file ./config/stage_i.yamls
+python run_stage_i.py --config_file ./config/stage_i.yaml
 ```
 
 The trained memory modality encoder will be saved in the `./results/pretrain` directory, and each experiment will
@@ -80,4 +82,3 @@ python evaluate_mindbridge.py --exp_id $this_is_exp_id$
 
 For testing other baseline methods, the implementation from EasyEdit is also used. Please refer to other `.py` files in
 `EasyEdit/examples` for details.
-
